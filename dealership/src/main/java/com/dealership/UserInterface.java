@@ -421,16 +421,48 @@ public class UserInterface {
 
             if (contractChoice.equals("1")) {
                 System.out.println("Sale selected.");
+
+                System.out.print("Would you like to finance this vehicle? (Y/N): ");
+                String financeChoice = scanner.nextLine().trim();
+
+                if (!financeChoice.equalsIgnoreCase("Y")
+                        && !financeChoice.equalsIgnoreCase("N")) {
+                    System.out.println("Invalid option. Please enter Y or N.");
+                    return;
+                }
+
+                // Convert the financing choice into a boolean for the contract.
+                boolean financed = financeChoice.equalsIgnoreCase("Y");
+
+                SalesContract salesContract = new SalesContract(
+                        contractDate, customerName, customerEmail,
+                        selectedVehicle, financed
+                );
+
+                System.out.println("Sales contract created successfully.");
+                System.out.printf("Total price: $%.2f%n", salesContract.getTotalPrice());
+                System.out.printf("Monthly payment: $%.2f%n", salesContract.getMonthlyPayment());
             } else if (contractChoice.equals("2")) {
+                // Only vehicles that are three years old or newer can be leased.
                 int currentYear = java.time.LocalDate.now().getYear();
 
                 if (currentYear - selectedVehicle.getYear() > 3) {
                     System.out.println("This vehicle cannot be leased.");
-                    System.out.println("Vehicles older than 3 years are not allowed.");
+                    System.out.println("Vehicles older than 3 years are not eligible!");
                     return;
                 }
 
                 System.out.println("Lease selected.");
+
+                LeaseContract leaseContract = new LeaseContract(
+                        contractDate, customerName, customerEmail, selectedVehicle
+                );
+
+                System.out.println("Lease contract created successfully.");
+                System.out.printf("Expected ending value: $%.2f%n", leaseContract.getExpectedEndingValue());
+                System.out.printf("Lease fee: $%.2f%n", leaseContract.getLeaseFee());
+                System.out.printf("Total price: $%.2f%n", leaseContract.getTotalPrice());
+                System.out.printf("Monthly payment: $%.2f%n", leaseContract.getMonthlyPayment());
             } else {
                 System.out.println("Invalid option. Please choose 1 or 2.");
             }
