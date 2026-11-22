@@ -442,13 +442,17 @@ public class UserInterface {
                 System.out.println("Sales contract created successfully.");
                 System.out.printf("Total price: $%.2f%n", salesContract.getTotalPrice());
                 System.out.printf("Monthly payment: $%.2f%n", salesContract.getMonthlyPayment());
+
+                // Save the completed contract before changing the inventory.
+                ContractDataManager contractDataManager = new ContractDataManager();
+                contractDataManager.saveContract(salesContract);
             } else if (contractChoice.equals("2")) {
                 // Only vehicles that are three years old or newer can be leased.
                 int currentYear = java.time.LocalDate.now().getYear();
 
                 if (currentYear - selectedVehicle.getYear() > 3) {
                     System.out.println("This vehicle cannot be leased.");
-                    System.out.println("Vehicles older than 3 years are not eligible!");
+                    System.out.println("Vehicles older than 3 years are not eligible.");
                     return;
                 }
 
@@ -463,12 +467,29 @@ public class UserInterface {
                 System.out.printf("Lease fee: $%.2f%n", leaseContract.getLeaseFee());
                 System.out.printf("Total price: $%.2f%n", leaseContract.getTotalPrice());
                 System.out.printf("Monthly payment: $%.2f%n", leaseContract.getMonthlyPayment());
+
+                // Save the completed contract before changing the inventory.
+                ContractDataManager contractDataManager = new ContractDataManager();
+                contractDataManager.saveContract(leaseContract);
             } else {
                 System.out.println("Invalid option. Please choose 1 or 2.");
+                return;
+            }
+
+            // Only remove the vehicle after its contract has been saved.
+            dealership.removeVehicle(selectedVehicle);
+            try {
+                DealershipFileManager fileManager = new DealershipFileManager();
+                fileManager.saveDealership(dealership);
+                System.out.println("Vehicle removed and inventory saved.");
+            } catch (IllegalStateException e) {
+                System.out.println("Contract saved, but inventory saving failed. Check inventory.csv before continuing.");
             }
 
         } catch (NumberFormatException e) {
             System.out.println("Please enter a valid whole number for VIN.");
+        } catch (IllegalStateException e) {
+            System.out.println("Unable to save contract. Inventory was not changed.");
         }
     }
 }
