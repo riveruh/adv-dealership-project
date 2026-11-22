@@ -1,3 +1,4 @@
+
 package com.dealership;
 
 import java.io.BufferedReader;
@@ -13,6 +14,7 @@ public class DealershipFileManager {
         try (BufferedReader reader =
                      new BufferedReader(new FileReader("inventory.csv"))) {
 
+            // the first line has the dealership's name, address, and phone number
             String firstLine = reader.readLine();
 
             if (firstLine == null) {
@@ -29,6 +31,7 @@ public class DealershipFileManager {
 
             String line;
 
+            // read the remaining lines to load each vehicle
             while ((line = reader.readLine()) != null) {
                 if (line.isBlank()) {
                     continue;
@@ -61,6 +64,7 @@ public class DealershipFileManager {
     }
 
     public void saveDealership(Dealership dealership) {
+        // saving replaces the old inventory file with the updated one
         try (BufferedWriter writer =
                      new BufferedWriter(new FileWriter("inventory.csv"))) {
 
@@ -71,6 +75,7 @@ public class DealershipFileManager {
             );
             writer.newLine();
 
+            // save each vehicle on its own line
             for (Vehicle vehicle : dealership.getAllVehicles()) {
                 writer.write(
                         vehicle.getVin() + "|"

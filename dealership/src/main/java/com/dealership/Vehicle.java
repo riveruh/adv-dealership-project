@@ -1,8 +1,11 @@
+
 package com.dealership;
 
 import java.math.BigDecimal;
 
 public class Vehicle {
+
+    // stores the basic information for each vehicle
     private int vin;
     private int year;
     private String make;

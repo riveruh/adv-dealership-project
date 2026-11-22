@@ -1,3 +1,4 @@
+
 package com.dealership;
 
 import java.math.BigDecimal;
@@ -52,6 +53,7 @@ public class Dealership {
     public List<Vehicle> getVehiclesByPrice(BigDecimal min, BigDecimal max) {
         List<Vehicle> matches = new ArrayList<>();
 
+        // compare prices to find vehicles within the given range
         for (Vehicle vehicle : inventory) {
             if (vehicle.getPrice().compareTo(min) >= 0
                     && vehicle.getPrice().compareTo(max) <= 0) {
@@ -65,6 +67,7 @@ public class Dealership {
     public List<Vehicle> getVehiclesByMakeModel(String make, String model) {
         List<Vehicle> matches = new ArrayList<>();
 
+        // ignore capitalization when checking the make and model
         for (Vehicle vehicle : inventory) {
             if (vehicle.getMake().equalsIgnoreCase(make)
                     && vehicle.getModel().equalsIgnoreCase(model)) {
@@ -124,6 +127,7 @@ public class Dealership {
         return matches;
     }
 
+    // remove a vehicle from the inventory after it's sold or leased
     public void removeVehicle(Vehicle vehicle) {
         inventory.remove(vehicle);
     }

@@ -37,6 +37,7 @@ public class SalesContract extends Contract {
     }
 
     public BigDecimal getProcessingFee() {
+        // cheaper vehicles have a lower processing fee
         if (getVehicle().getPrice().compareTo(
                 new BigDecimal("10000")) < 0) {
             return new BigDecimal("295.00");
@@ -47,6 +48,7 @@ public class SalesContract extends Contract {
 
     @Override
     public BigDecimal getTotalPrice() {
+        // add the taxes and fees to the original vehicle price
         return getVehicle().getPrice()
                 .add(getSalesTax())
                 .add(getRecordingFee())
@@ -55,6 +57,7 @@ public class SalesContract extends Contract {
 
     @Override
     public BigDecimal getMonthlyPayment() {
+        // no monthly payment if the customer isn't financing
         if (!financed) {
             return BigDecimal.ZERO.setScale(2);
         }
@@ -64,6 +67,7 @@ public class SalesContract extends Contract {
         double annualRate;
         int months;
 
+        // the interest rate and loan length depend on the vehicle price
         if (vehiclePrice.compareTo(
                 new BigDecimal("10000")) >= 0) {
             annualRate = 0.0425;
@@ -76,6 +80,7 @@ public class SalesContract extends Contract {
         double monthlyRate = annualRate / 12;
         double principal = getTotalPrice().doubleValue();
 
+        // calculate the monthly payment using the loan formula
         double monthlyPayment = principal * monthlyRate /
                 (1 - Math.pow(1 + monthlyRate, -months));
 

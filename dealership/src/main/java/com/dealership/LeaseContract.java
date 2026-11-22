@@ -18,12 +18,14 @@ public class LeaseContract extends Contract {
     }
 
     public BigDecimal getExpectedEndingValue() {
+        // the vehicle is expected to be worth half its original price
         return getVehicle().getPrice()
                 .multiply(ENDING_VALUE_RATE)
                 .setScale(2, RoundingMode.HALF_UP);
     }
 
     public BigDecimal getLeaseFee() {
+        // the lease fee is 7% of the vehicle price
         return getVehicle().getPrice()
                 .multiply(LEASE_FEE_RATE)
                 .setScale(2, RoundingMode.HALF_UP);
@@ -44,6 +46,7 @@ public class LeaseContract extends Contract {
         double monthlyRate = annualRate / 12;
         double principal = getTotalPrice().doubleValue();
 
+        // calculate the monthly payment over 36 months
         double monthlyPayment = principal * monthlyRate /
                 (1 - Math.pow(1 + monthlyRate, -months));
 

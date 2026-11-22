@@ -254,6 +254,7 @@ public class UserInterface {
                 return;
             }
 
+            // pipes would mess up how vehicle details are separated in the csv file
             if (make.contains("|") || model.contains("|")
                     || vehicleType.contains("|") || color.contains("|")) {
                 System.out.println("Vehicle details cannot contain |.");
@@ -405,6 +406,7 @@ public class UserInterface {
                 return;
             }
 
+            // pipes would mess up how customer details are saved in the csv file
             if (customerName.contains("|")
                     || customerEmail.contains("|")
                     || contractDate.contains("|")) {
@@ -431,7 +433,7 @@ public class UserInterface {
                     return;
                 }
 
-                // Convert the financing choice into a boolean for the contract.
+                // turn the y or n answer into true or false
                 boolean financed = financeChoice.equalsIgnoreCase("Y");
 
                 SalesContract salesContract = new SalesContract(
@@ -443,11 +445,11 @@ public class UserInterface {
                 System.out.printf("Total price: $%.2f%n", salesContract.getTotalPrice());
                 System.out.printf("Monthly payment: $%.2f%n", salesContract.getMonthlyPayment());
 
-                // Save the completed contract before changing the inventory.
+                // save the contract first so we don't lose the sale or lease details
                 ContractDataManager contractDataManager = new ContractDataManager();
                 contractDataManager.saveContract(salesContract);
             } else if (contractChoice.equals("2")) {
-                // Only vehicles that are three years old or newer can be leased.
+                // vehicles older than three years can't be leased
                 int currentYear = java.time.LocalDate.now().getYear();
 
                 if (currentYear - selectedVehicle.getYear() > 3) {
@@ -468,7 +470,7 @@ public class UserInterface {
                 System.out.printf("Total price: $%.2f%n", leaseContract.getTotalPrice());
                 System.out.printf("Monthly payment: $%.2f%n", leaseContract.getMonthlyPayment());
 
-                // Save the completed contract before changing the inventory.
+                // save the contract first so we don't lose the sale or lease details
                 ContractDataManager contractDataManager = new ContractDataManager();
                 contractDataManager.saveContract(leaseContract);
             } else {
@@ -476,7 +478,7 @@ public class UserInterface {
                 return;
             }
 
-            // Only remove the vehicle after its contract has been saved.
+            // once the contract is saved, remove the vehicle from the available inventory
             dealership.removeVehicle(selectedVehicle);
             try {
                 DealershipFileManager fileManager = new DealershipFileManager();

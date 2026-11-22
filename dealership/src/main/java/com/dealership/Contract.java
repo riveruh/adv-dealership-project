@@ -3,6 +3,7 @@ package com.dealership;
 
 import java.math.BigDecimal;
 
+// both sales and lease contracts use this class
 public abstract class Contract {
 
     private String date;
@@ -50,6 +51,7 @@ public abstract class Contract {
         this.vehicle = vehicle;
     }
 
+    // sales and leases have their own ways of calculating these
     public abstract BigDecimal getTotalPrice();
 
     public abstract BigDecimal getMonthlyPayment();

@@ -13,6 +13,7 @@ public class ContractDataManager {
 
     public void saveContract(Contract contract) {
 
+        // true makes sure new contracts are added without deleting old ones
         try (BufferedWriter writer =
                      new BufferedWriter(new FileWriter(FILE_NAME, true))) {
 
@@ -20,6 +21,7 @@ public class ContractDataManager {
 
             StringBuilder line = new StringBuilder();
 
+            // check which type of contract we're saving
             if (contract instanceof SalesContract) {
                 line.append("SALE");
             } else if (contract instanceof LeaseContract) {
@@ -41,6 +43,7 @@ public class ContractDataManager {
             line.append("|").append(vehicle.getOdometer());
             line.append("|").append(formatMoney(vehicle.getPrice()));
 
+            // sales and leases need different information saved
             if (contract instanceof SalesContract sale) {
 
                 line.append("|").append(formatMoney(sale.getSalesTax()));
@@ -70,6 +73,7 @@ public class ContractDataManager {
     }
 
     private String formatMoney(BigDecimal amount) {
+        // keep money values at two decimal places in the csv file
         return amount.setScale(2, RoundingMode.HALF_UP)
                 .toPlainString();
     }
