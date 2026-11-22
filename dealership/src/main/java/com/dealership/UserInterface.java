@@ -29,6 +29,7 @@ public class UserInterface {
             System.out.println("7 - List all vehicles");
             System.out.println("8 - Add a vehicle");
             System.out.println("9 - Remove a vehicle");
+            System.out.println("10 - Sell/Lease a vehicle");
             System.out.println("99 - Quit");
             System.out.print("Choose an option: ");
 
@@ -61,6 +62,9 @@ public class UserInterface {
                     break;
                 case "9":
                     processRemoveVehicleRequest();
+                    break;
+                case "10":
+                    processSellLeaseVehicle();
                     break;
                 case "99":
                     running = false;
@@ -356,6 +360,83 @@ public class UserInterface {
                     "The vehicle was removed in memory, but saving failed."
                             + " The inventory file may be incomplete."
             );
+        }
+    }
+
+    public void processSellLeaseVehicle() {
+        System.out.println("===== Sell/Lease a Vehicle =====");
+
+        try {
+            System.out.print("Enter VIN of vehicle: ");
+            int vin = Integer.parseInt(scanner.nextLine().trim());
+
+            Vehicle selectedVehicle = null;
+
+            for (Vehicle vehicle : dealership.getAllVehicles()) {
+                if (vehicle.getVin() == vin) {
+                    selectedVehicle = vehicle;
+                    break;
+                }
+            }
+
+            if (selectedVehicle == null) {
+                System.out.println("No vehicle found with that VIN.");
+                return;
+            }
+
+            System.out.println("Selected vehicle: "
+                    + selectedVehicle.getYear() + " "
+                    + selectedVehicle.getMake() + " "
+                    + selectedVehicle.getModel());
+
+            System.out.print("Enter customer name: ");
+            String customerName = scanner.nextLine().trim();
+
+            System.out.print("Enter customer email: ");
+            String customerEmail = scanner.nextLine().trim();
+
+            System.out.print("Enter contract date (YYYYMMDD): ");
+            String contractDate = scanner.nextLine().trim();
+
+            if (customerName.isBlank()
+                    || customerEmail.isBlank()
+                    || contractDate.isBlank()) {
+                System.out.println("Customer information and date cannot be blank.");
+                return;
+            }
+
+            if (customerName.contains("|")
+                    || customerEmail.contains("|")
+                    || contractDate.contains("|")) {
+                System.out.println("Customer information cannot contain |.");
+                return;
+            }
+
+            System.out.println("Customer information collected successfully.");
+
+            System.out.println("\n1 - Buy vehicle");
+            System.out.println("2 - Lease vehicle");
+            System.out.print("Choose an option: ");
+            String contractChoice = scanner.nextLine().trim();
+
+            if (contractChoice.equals("1")) {
+                System.out.println("Sale selected.");
+            } else if (contractChoice.equals("2")) {
+                int currentYear = java.time.LocalDate.now().getYear();
+
+                if (currentYear - selectedVehicle.getYear() > 3) {
+                    System.out.println("This vehicle cannot be leased.");
+                    System.out.println("Vehicles older than 3 years are not allowed.");
+                    return;
+                }
+
+                System.out.println("Lease selected.");
+            } else {
+                System.out.println("Invalid option. Please choose 1 or 2.");
+            }
+
+        } catch (NumberFormatException e) {
+            System.out.println("Please enter a valid whole number for VIN.");
         }
     }
 }
